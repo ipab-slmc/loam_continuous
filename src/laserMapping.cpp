@@ -52,9 +52,9 @@ pcl::PointCloud<pcl::PointXYZHSV>::Ptr laserCloudOri(new pcl::PointCloud<pcl::Po
 
 
 // debug
-pcl::PointCloud<pcl::PointXYZHSV>::Ptr laserCloudSel(new pcl::PointCloud<pcl::PointXYZHSV>());
-pcl::PointCloud<pcl::PointXYZHSV>::Ptr laserCloudCorr(new pcl::PointCloud<pcl::PointXYZHSV>());
-pcl::PointCloud<pcl::PointXYZHSV>::Ptr laserCloudProj(new pcl::PointCloud<pcl::PointXYZHSV>());
+// pcl::PointCloud<pcl::PointXYZHSV>::Ptr laserCloudSel(new pcl::PointCloud<pcl::PointXYZHSV>());
+// pcl::PointCloud<pcl::PointXYZHSV>::Ptr laserCloudCorr(new pcl::PointCloud<pcl::PointXYZHSV>());
+// pcl::PointCloud<pcl::PointXYZHSV>::Ptr laserCloudProj(new pcl::PointCloud<pcl::PointXYZHSV>());
 // end debug
 
 
@@ -248,10 +248,10 @@ int main(int argc, char** argv)
   ros::NodeHandle nh;
 
   ros::Subscriber subLaserCloudLast2 = nh.subscribe<sensor_msgs::PointCloud2> 
-                                       ("/laser_cloud_last_2", 2, laserCloudLastHandler);
+                                       ("/laser_cloud_last_2", 4, laserCloudLastHandler);
 
   ros::Subscriber subLaserOdometry = nh.subscribe<nav_msgs::Odometry> 
-                                     ("/cam_to_init", 5, laserOdometryHandler);
+                                     ("/cam_to_init", 10, laserOdometryHandler);
 
   ros::Publisher pubLaserCloudSurround = nh.advertise<sensor_msgs::PointCloud2> 
                                          ("/laser_cloud_surround", 1);
@@ -259,23 +259,23 @@ int main(int argc, char** argv)
 
 
   // debug
-  ros::Publisher pub1 = nh.advertise<sensor_msgs::PointCloud2> ("/pc_m1", 1);
+  // ros::Publisher pub1 = nh.advertise<sensor_msgs::PointCloud2> ("/pc_m1", 1);
 
-  ros::Publisher pub2 = nh.advertise<sensor_msgs::PointCloud2> ("/pc_m2", 1);
+  // ros::Publisher pub2 = nh.advertise<sensor_msgs::PointCloud2> ("/pc_m2", 1);
 
-  ros::Publisher pub3 = nh.advertise<sensor_msgs::PointCloud2> ("/pc_m3", 1);
+  // ros::Publisher pub3 = nh.advertise<sensor_msgs::PointCloud2> ("/pc_m3", 1);
 
-  ros::Publisher pub4 = nh.advertise<sensor_msgs::PointCloud2> ("/pc_m4", 1);
+  // ros::Publisher pub4 = nh.advertise<sensor_msgs::PointCloud2> ("/pc_m4", 1);
   // end debug
 
 
 
-  ros::Publisher pubOdomBefMapped = nh.advertise<nav_msgs::Odometry> ("/bef_mapped_to_init_2", 5);
+  ros::Publisher pubOdomBefMapped = nh.advertise<nav_msgs::Odometry> ("/bef_mapped_to_init_2", 10);
   nav_msgs::Odometry odomBefMapped;
   odomBefMapped.header.frame_id = "/camera_init_2";
   odomBefMapped.child_frame_id = "/bef_mapped";
 
-  ros::Publisher pubOdomAftMapped = nh.advertise<nav_msgs::Odometry> ("/aft_mapped_to_init_2", 5);
+  ros::Publisher pubOdomAftMapped = nh.advertise<nav_msgs::Odometry> ("/aft_mapped_to_init_2", 10);
   nav_msgs::Odometry odomAftMapped;
   odomAftMapped.header.frame_id = "/camera_init_2";
   odomAftMapped.child_frame_id = "/aft_mapped";
@@ -428,9 +428,9 @@ int main(int argc, char** argv)
           
 
           // debug
-          laserCloudSel->clear();
-          laserCloudCorr->clear();
-          laserCloudProj->clear();
+          // laserCloudSel->clear();
+          // laserCloudCorr->clear();
+          // laserCloudProj->clear();
           // end debug
 
 
@@ -499,13 +499,13 @@ int main(int argc, char** argv)
 
 
                       // debug
-                      laserCloudSel->push_back(pointSel);
-                      laserCloudProj->push_back(pointProj);
-                      laserCloudCorr->push_back(laserCloudSurfFromMap->points[pointSearchInd[0]]);
-                      laserCloudCorr->push_back(laserCloudSurfFromMap->points[pointSearchInd[1]]);
-                      laserCloudCorr->push_back(laserCloudSurfFromMap->points[pointSearchInd[2]]);
-                      laserCloudCorr->push_back(laserCloudSurfFromMap->points[pointSearchInd[3]]);
-                      laserCloudCorr->push_back(laserCloudSurfFromMap->points[pointSearchInd[4]]);
+                      // laserCloudSel->push_back(pointSel);
+                      // laserCloudProj->push_back(pointProj);
+                      // laserCloudCorr->push_back(laserCloudSurfFromMap->points[pointSearchInd[0]]);
+                      // laserCloudCorr->push_back(laserCloudSurfFromMap->points[pointSearchInd[1]]);
+                      // laserCloudCorr->push_back(laserCloudSurfFromMap->points[pointSearchInd[2]]);
+                      // laserCloudCorr->push_back(laserCloudSurfFromMap->points[pointSearchInd[3]]);
+                      // laserCloudCorr->push_back(laserCloudSurfFromMap->points[pointSearchInd[4]]);
                       // end debug
 
 
@@ -589,13 +589,13 @@ int main(int argc, char** argv)
                     float l12 = sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2) + (z1 - z2)*(z1 - z2));
 
                     float la = ((y1 - y2)*((x0 - x1)*(y0 - y2) - (x0 - x2)*(y0 - y1)) 
-                             + (z1 - z2)*((x0 - x1)*(z0 - z2) - (x0 - x2)*(z0 - z1))) / a012 / l12;
+                             +  (z1 - z2)*((x0 - x1)*(z0 - z2) - (x0 - x2)*(z0 - z1))) / a012 / l12;
 
                     float lb = -((x1 - x2)*((x0 - x1)*(y0 - y2) - (x0 - x2)*(y0 - y1)) 
-                             - (z1 - z2)*((y0 - y1)*(z0 - z2) - (y0 - y2)*(z0 - z1))) / a012 / l12;
+                             -   (z1 - z2)*((y0 - y1)*(z0 - z2) - (y0 - y2)*(z0 - z1))) / a012 / l12;
 
                     float lc = -((x1 - x2)*((x0 - x1)*(z0 - z2) - (x0 - x2)*(z0 - z1)) 
-                             + (y1 - y2)*((y0 - y1)*(z0 - z2) - (y0 - y2)*(z0 - z1))) / a012 / l12;
+                             +   (y1 - y2)*((y0 - y1)*(z0 - z2) - (y0 - y2)*(z0 - z1))) / a012 / l12;
 
                     float ld2 = a012 / l12;
 
@@ -616,13 +616,13 @@ int main(int argc, char** argv)
 
 
                       // debug
-                      laserCloudSel->push_back(pointSel);
-                      laserCloudProj->push_back(pointProj);
-                      laserCloudCorr->push_back(laserCloudCornerFromMap->points[pointSearchInd[0]]);
-                      laserCloudCorr->push_back(laserCloudCornerFromMap->points[pointSearchInd[1]]);
-                      laserCloudCorr->push_back(laserCloudCornerFromMap->points[pointSearchInd[2]]);
-                      laserCloudCorr->push_back(laserCloudCornerFromMap->points[pointSearchInd[3]]);
-                      laserCloudCorr->push_back(laserCloudCornerFromMap->points[pointSearchInd[4]]);
+                      // laserCloudSel->push_back(pointSel);
+                      // laserCloudProj->push_back(pointProj);
+                      // laserCloudCorr->push_back(laserCloudCornerFromMap->points[pointSearchInd[0]]);
+                      // laserCloudCorr->push_back(laserCloudCornerFromMap->points[pointSearchInd[1]]);
+                      // laserCloudCorr->push_back(laserCloudCornerFromMap->points[pointSearchInd[2]]);
+                      // laserCloudCorr->push_back(laserCloudCornerFromMap->points[pointSearchInd[3]]);
+                      // laserCloudCorr->push_back(laserCloudCornerFromMap->points[pointSearchInd[4]]);
                       // end debug
 
 
@@ -797,29 +797,29 @@ int main(int argc, char** argv)
 
 
       // debug
-      sensor_msgs::PointCloud2 pc12;
-      pcl::toROSMsg(*laserCloudCornerFromMap, pc12);
-      pc12.header.stamp = ros::Time().fromSec(timeLaserCloudLast);
-      pc12.header.frame_id = "/camera_init_2";
-      pub1.publish(pc12);
+      // sensor_msgs::PointCloud2 pc12;
+      // pcl::toROSMsg(*laserCloudCornerFromMap, pc12);
+      // pc12.header.stamp = ros::Time().fromSec(timeLaserCloudLast);
+      // pc12.header.frame_id = "/camera_init_2";
+      // pub1.publish(pc12);
 
-      sensor_msgs::PointCloud2 pc22;
-      pcl::toROSMsg(*laserCloudSel, pc22);
-      pc22.header.stamp = ros::Time().fromSec(timeLaserCloudLast);
-      pc22.header.frame_id = "/camera_init_2";
-      pub2.publish(pc22);
+      // sensor_msgs::PointCloud2 pc22;
+      // pcl::toROSMsg(*laserCloudSel, pc22);
+      // pc22.header.stamp = ros::Time().fromSec(timeLaserCloudLast);
+      // pc22.header.frame_id = "/camera_init_2";
+      // pub2.publish(pc22);
 
-      sensor_msgs::PointCloud2 pc32;
-      pcl::toROSMsg(*laserCloudCorr, pc32);
-      pc32.header.stamp = ros::Time().fromSec(timeLaserCloudLast);
-      pc32.header.frame_id = "/camera_init_2";
-      pub3.publish(pc32);
+      // sensor_msgs::PointCloud2 pc32;
+      // pcl::toROSMsg(*laserCloudCorr, pc32);
+      // pc32.header.stamp = ros::Time().fromSec(timeLaserCloudLast);
+      // pc32.header.frame_id = "/camera_init_2";
+      // pub3.publish(pc32);
 
-      sensor_msgs::PointCloud2 pc42;
-      pcl::toROSMsg(*laserCloudProj, pc42);
-      pc42.header.stamp = ros::Time().fromSec(timeLaserCloudLast);
-      pc42.header.frame_id = "/camera_init_2";
-      pub4.publish(pc42);
+      // sensor_msgs::PointCloud2 pc42;
+      // pcl::toROSMsg(*laserCloudProj, pc42);
+      // pc42.header.stamp = ros::Time().fromSec(timeLaserCloudLast);
+      // pc42.header.frame_id = "/camera_init_2";
+      // pub4.publish(pc42);
       // end debug
 
 
