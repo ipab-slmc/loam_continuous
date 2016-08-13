@@ -822,6 +822,7 @@ int main(int argc, char** argv)
                 }
               }
             }
+          // if sharp edge
           } else if (fabs(extreOri.v - 2) < 0.05) {
 
             int closestPointInd = -1, minPointInd2 = -1;
@@ -961,10 +962,12 @@ int main(int argc, char** argv)
         }
         int extrePointSelNum = laserCloudExtreOri->points.size();
 
+        // if not enough extreme points, just skip this iteration
         if (extrePointSelNum < 10) {
           continue;
         }
 
+        // non-linear optimisation of the distance metric using Lavenberg-Marquardt method
         cv::Mat matA(extrePointSelNum, 6, CV_32F, cv::Scalar::all(0));
         cv::Mat matAt(6, extrePointSelNum, CV_32F, cv::Scalar::all(0));
         cv::Mat matAtA(6, 6, CV_32F, cv::Scalar::all(0));
@@ -1034,6 +1037,7 @@ int main(int argc, char** argv)
         cv::solve(matAtA, matAtB, matX, cv::DECOMP_QR);
         //cv::solve(matA, matB, matX, cv::DECOMP_SVD);
 
+        // if the non-linear optimisation converges (Lavenberg-Marquardt method), compute a new transform
         if (fabs(matX.at<float>(0, 0)) < 0.005 &&
             fabs(matX.at<float>(1, 0)) < 0.005 &&
             fabs(matX.at<float>(2, 0)) < 0.005 &&
@@ -1050,6 +1054,7 @@ int main(int argc, char** argv)
           transform[3] += matX.at<float>(3, 0);
           transform[4] += matX.at<float>(4, 0);
           transform[5] += matX.at<float>(5, 0);
+        // if it doesn't converge, inform the scientist
         } else {
           if(debug_mode) {
             ROS_INFO_STREAM(fabs(matX.at<float>(0, 0)) << fabs(matX.at<float>(1, 0)) << fabs(matX.at<float>(2, 0)) << fabs(matX.at<float>(3, 0)) << fabs(matX.at<float>(4, 0)) << fabs(matX.at<float>(5, 0)));
@@ -1057,6 +1062,8 @@ int main(int argc, char** argv)
           }
         }
       }
+
+      // debug for showing the different planar and edge points in the current sweep and the projected ones in the map
       if(debug_mode) {
         sensor_msgs::PointCloud2 pc12;
         pcl::toROSMsg(*laserCloudCornerPtr, pc12);
@@ -1098,7 +1105,9 @@ int main(int argc, char** argv)
 
     if (newLaserPoints) {
       float rx, ry, rz, tx, ty, tz;
+      // reproject each point in the sweep to the next timestamp
       if (sweepEnd) {
+        // calculate the transform T^L_{k+1}
         AccumulateRotation(transformSum[0], transformSum[1], transformSum[2], 
                            -transform[0], -transform[1] * 1.05, -transform[2], rx, ry, rz);
 
@@ -1119,6 +1128,7 @@ int main(int argc, char** argv)
         PluginIMURotation(rx, ry, rz, imuPitchStartLast, imuYawStartLast, imuRollStartLast, 
                           imuPitchLast, imuYawLast, imuRollLast, rx, ry, rz);
 
+        // reprojection of points to the end of timestamps (t_{k+2})
         int laserCloudCornerLastNum = laserCloudCornerLast->points.size();
         for (int i = 0; i < laserCloudCornerLastNum; i++) {
           TransformToEnd(&laserCloudCornerLast->points[i], &laserCloudCornerLast->points[i], 
@@ -1149,7 +1159,9 @@ int main(int argc, char** argv)
                                      transformSum[3], transformSum[4], transformSum[5]);
         pubLaserCloudLast2.publish(laserCloudLast2);
 
+      // if not at the end of the sweep, just return the odometry transform
       } else {
+        // calculate the transform T^L_{k+1}
         AccumulateRotation(transformSum[0], transformSum[1], transformSum[2], 
                            -transform[0], -transform[1] * 1.05, -transform[2], rx, ry, rz);
 
@@ -1167,6 +1179,7 @@ int main(int argc, char** argv)
         ty = transformSum[4] - y2;
         tz = transformSum[5] - (-sin(ry) * x2 + cos(ry) * z2);
 
+        // incorporate IMU measurements
         PluginIMURotation(rx, ry, rz, imuPitchStartCur, imuYawStartCur, imuRollStartCur, 
                           imuPitchCur, imuYawCur, imuRollCur, rx, ry, rz);
       }
