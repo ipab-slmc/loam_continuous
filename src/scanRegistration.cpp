@@ -628,10 +628,11 @@ void laserCloudHandler(sensor_msgs::PointCloud2 laserCloudIn2)
         
         largestPickedNum++;
         if (largestPickedNum <= 2) {
-          // value of 2 means it's a an edge
+          // value of 2 means it's a a sharp edge
           laserCloud->points[cloudSortInd[j]].v = 2;
           cornerPointsSharp->push_back(laserCloud->points[cloudSortInd[j]]);
         } else if (largestPickedNum <= 20) {
+          // value of 1 means it's a less sharp edge
           laserCloud->points[cloudSortInd[j]].v = 1;
           cornerPointsLessSharp->push_back(laserCloud->points[cloudSortInd[j]]);
         } else {
