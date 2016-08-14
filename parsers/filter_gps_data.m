@@ -1,4 +1,4 @@
-function [ ] = filter_gps_data( input_data, kalman_filter, median_filter_gps, median_filter_enu)
+function [ run1_enu_filtered_151, run1_enu_filtered_201, run1_enu_filtered_251 ] = filter_gps_data( input_data, kalman_filter, median_filter_gps, median_filter_enu)
 %FILTER_GPS_DATA Use either KF, median filtering over gps coordinates or
 %over navsat/enu data
     warning('off', 'all');
@@ -12,9 +12,9 @@ function [ ] = filter_gps_data( input_data, kalman_filter, median_filter_gps, me
         s.x = nan;
         s.P = nan;
         s.H = eye(size(gps_data,2));
-        s.R = cov(gps_data);
-    %     s.R = zeros(size(gps_data,2), size(gps_data,2));
-    %     s.R = [1e-7, 0, 0;0 2e-6, 0; 0, 0 0.1]; % cov of measurement
+%         s.R = cov(gps_data);
+        s.R = eye(size(gps_data,2), size(gps_data,2));
+%         s.R = [1e-7, 0, 0;0 2e-6, 0; 0, 0 0.1]; % cov of measurement
         s.B = 0;
         s.u = 0;
         s.Q = 0;
@@ -112,23 +112,23 @@ function [ ] = filter_gps_data( input_data, kalman_filter, median_filter_gps, me
         hold on;
         
         % show original data
-        gg = line(input_data(:,1), input_data(:,2), input_data(:,3), 'Color', 'm');
+        gg = scatter3(input_data(:,1), input_data(:,2), input_data(:,3));
         % n-th order median filtetr
-        n = 150;
-        run1_enu_filtered_150 = [input_data(:,1), medfilt1(input_data(:,2), n), medfilt1(input_data(:,3), n)];
-        gm150 = line(run1_enu_filtered_150(2:end,1), run1_enu_filtered_150(2:end,2), run1_enu_filtered_150(2:end,3), 'Color', 'g');
+        n = 151;
+        run1_enu_filtered_151 = [input_data(:,1), medfilt1(input_data(:,2), n), medfilt1(input_data(:,3), n), medfilt1(input_data(:,4), n)];
+        gm151 = scatter3(run1_enu_filtered_151(:,1), run1_enu_filtered_151(:,2), run1_enu_filtered_151(:,3));
         
-        n = 200;
-        run1_enu_filtered_200 = [input_data(:,1), medfilt1(input_data(:,2), n), medfilt1(input_data(:,3), n), medfilt1(input_data(:,4), n)];
-        gm200 = line(run1_enu_filtered_200(2:end,1), run1_enu_filtered_200(2:end,2), run1_enu_filtered_200(2:end,3), 'Color', 'r');
+        n = 201;
+        run1_enu_filtered_201 = [input_data(:,1), medfilt1(input_data(:,2), n), medfilt1(input_data(:,3), n), medfilt1(input_data(:,4), n)];
+        gm201 = scatter3(run1_enu_filtered_201(:,1), run1_enu_filtered_201(:,2), run1_enu_filtered_201(:,3));
         
-        n = 250;
-        run1_enu_filtered_250 = [input_data(:,1), medfilt1(input_data(:,2), n), medfilt1(input_data(:,3), n), medfilt1(input_data(:,4), n)];
-        gm250 = line(run1_enu_filtered_250(2:end,1), run1_enu_filtered_250(2:end,2), run1_enu_filtered_250(2:end,3), 'Color', 'b');
+        n = 251;
+        run1_enu_filtered_251 = [input_data(:,1), medfilt1(input_data(:,2), n), medfilt1(input_data(:,3), n), medfilt1(input_data(:,4), n)];
+        gm251 = scatter3(run1_enu_filtered_251(:,1), run1_enu_filtered_251(:,2), run1_enu_filtered_251(:,3));
         
-        n = 500;
-        run1_enu_filtered_500 = [input_data(:,1), medfilt1(input_data(:,2), n), medfilt1(input_data(:,3), n), medfilt1(input_data(:,4), n)];
-        gm500 = line(run1_enu_filtered_500(2:end,1), run1_enu_filtered_500(2:end,2), run1_enu_filtered_500(2:end,3), 'Color', 'k');
+        n = 501;
+        run1_enu_filtered_501 = [input_data(:,1), medfilt1(input_data(:,2), n), medfilt1(input_data(:,3), n), medfilt1(input_data(:,4), n)];
+        gm501 = scatter3(run1_enu_filtered_501(:,1), run1_enu_filtered_501(:,2), run1_enu_filtered_501(:,3));
         
         % plotting time
         title('Median Filtering comparison');
@@ -136,7 +136,7 @@ function [ ] = filter_gps_data( input_data, kalman_filter, median_filter_gps, me
         ylabel('Relative Longitude');
         zlabel('Relative Latitude');
         view(90, 0);
-        legend([gg, gm150 gm200 gm250 gm500], 'GPS', 'Median 150', 'Median 200', 'Median 250', 'Median 500', 0);
+        legend([gg, gm151 gm201 gm251 gm501], 'GPS', 'Median 151', 'Median 201', 'Median 251', 'Median 501', 0);
         hold off;
     end
     

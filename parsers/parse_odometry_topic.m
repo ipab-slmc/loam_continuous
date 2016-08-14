@@ -21,7 +21,7 @@ function [ pose_arr ] = parse_odometry_topic( input_file )
         secs_str = strsplit(rem{1}, 'secs');
         secs = sscanf(secs_str{2}, '%*s%d%*s');
         nsecs = sscanf(secs_str{3}, '%*s%d%*s');
-        pose_arr(i,1) = secs+nsecs*10^-9;
+        pose_arr(i,1) = (secs+nsecs*10^-9)*10^6;
         % get the position and orientation(rem{3})
         [pose, rem2] = strsplit(rem{3}, 'covariance');
         % pose now looks like so:
