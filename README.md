@@ -2,7 +2,7 @@
 Lidar Odometry and Mapping (LOAM) ported for Multisense SL.
 Tested on ROS Indigo, on a laptop with 2.9GHz quad cores and 16gb memory (consumes 2 cores).
 
-[![Loam Multisense](http://img.youtube.com/vi/Zu_7hwVlG8c/0.jpg)](https://youtu.be/StTqXEQ2l-Y "Loam Multisense")
+[![Loam Multisense](http://img.youtube.com/vi/Zu_7hwVlG8c/0.jpg)](https://youtu.be/Zu_7hwVlG8c "Loam Multisense")
 
 ### How to use
 Here we assume you have a Catkin workspace under ~/ros_workspace/catkin_ws.
